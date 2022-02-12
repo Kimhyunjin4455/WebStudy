@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+  <div id="root"></div>
+</body>
+<script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+  function Btn({text, changeValue, fontSize=12}){  //Btn컴포넌트, props대신 {banana 가능}, 그럼 25행도 {banana}로만 적으면 됨, changeValue 위치에 onClick을 쓰면 이벤트가 아니라 프로퍼티(props)임
+    //자식 컴포넌트
+    return (
+      <button
+      onClick={changeValue} 
+      style={{
+        backgroundColor: "tomato",
+        color: "white",
+        padding: "10px 20px",
+        borderRadius: 10,
+        fontSize,
+      }}
+      >
+      {text}
+    </button>
+    );
+  }
+  //react js는 자동으로 Btn에 넣는 프로퍼티(prop)를 오브젝트에 넣고(아래의 예제는 {banana: "Save Changes"}) 이 오브젝트를 컴포넌트의 첫번째 인자로 줌
+  
+  //Btn.propTypes = {
+  //  fontSize: propTypes.number,
+  //};
+  function App() { //부모 컴포넌트, value는 state
+    const [value, setValue] = React.useState("Save Changes");
+    const changeValue = () => setValue("Revert Changes");
+    // 위와 같이 상태(state)가 변경되면 페이지가 re-rendering됨
+    return (     //jsx의 내부, Btn의 text는 컴포넌트 명으로 임의로 작성 가능, 어떤 prop이든 Btn 컴포넌트에 보내면 Btn함수의 첫번째 인자로 들어갈 것
+    <div>
+            
+    <Btn text={value} changeValue={changeValue}/>    
+    <Btn text="Continue" fontSize={18}/>
+    </div>
+    );
+    // React.memo(btn)을 작성할 시 첫 버튼은 상태(value)를 수정하므로 리렌더링이 되지만 두번째는 아님(저 hook을 통해 리렌더링 조절 가능)  
+    // Btn의 onClick(changeValue로 수정됨)은 이벤트리스너가 아니라, props의 이름, onClick이벤트가 필요하면 Btn함수에 따로 작성
+    // 부모가 상태 변경이 있으면 모든 자식은 리렌더링 될 것
+  }
+  // prop으로 원하는 어떤 prop 이든 보낼 수 있고, 하고 있는 뭐든 가능하게 해줌 >> 컴포넌트의 환경을 원하는 만큼 설정할 수 있기 때문
+  const root = document.getElementById("root");
+  ReactDOM.render(<App />, root);
+</script>
+</html>
